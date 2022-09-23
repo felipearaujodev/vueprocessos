@@ -1,17 +1,18 @@
 <template>
     <div>
         <div>
+
             <form id="processo-form" @submit="criarProcesso">
                 <div class="input-container">
-                    <label for="nome">Número</label>
+                    <label for="nome">Número <sup>*</sup></label>
                     <input type="number" id="numero" name="numero" v-model="numero" placeholder="Digite o número do processo">       
                 </div>
                 <div class="input-container">
-                    <label for="data">Data</label>
+                    <label for="data">Data <sup>*</sup></label>
                     <input type="date" id="data" name="data" v-model="data" placeholder="Seleciona uma data">       
                 </div>
                 <div class="input-container">
-                    <label for="tipo">Tipo</label>
+                    <label for="tipo">Tipo <sup>*</sup></label>
                     <select name="tipo" id="tipo" v-model="tipo">
                         <option value="">Selecione o tipo</option>
                         <option value="judicial">Judicial</option>
@@ -23,7 +24,7 @@
                     <input type="text" id="obs" name="obs" v-model="obs" placeholder="Observações">       
                 </div>
                 <div class="input-container">
-                    <label for="doc">Selecione o documento:</label>
+                    <label for="doc">Selecione o documento: <sup>*</sup></label>
                     <input 
                         type="file" 
                         v-on:change="fileUpload()" 
@@ -44,6 +45,9 @@
     import { ref } from "vue";
     import PartesForm from "./PartesForm.vue";
     import api from '../services/api';
+    import { createToaster } from "@meforma/vue-toaster";
+
+    const toaster = createToaster({ });
 
     export default {
         name: "ProcessoForm",
@@ -56,7 +60,8 @@
                 data: null,
                 tipo: "",
                 obs: null,
-                doc: ref(null)
+                doc: ref(null),
+                msg: null
             }
         },
         methods: {
@@ -64,7 +69,7 @@
                 e.preventDefault();
                
 
-                api.post('/processo', {
+                await api.post('/processo', {
                     numero: this.numero.toString(),
                     data: this.data,
                     tipo: this.tipo,
@@ -73,20 +78,39 @@
                     partes: []
                 })
                 .then(function (response) {
-                    console.log(response);
+                    console.log(response)
+                    if(response.status >= 200 && response.status <= 299)
+                    {
+                        
+                        toaster.show("Processo cadastrado com sucesso!", {
+                            type:"info",
+                            position: "top"
+                        });
+
+                        
+
+                    }
+                    else
+                    {
+                        toaster.show("Erro ao cadastrar!", {
+                            type:"error",
+                            position: "top"
+                        });
+                    }
                 })
                 .catch(function (error) {
-                    console.log(error.response.data.errors);
+                    toaster.show("Erro ao cadastrar!", {
+                            type:"error",
+                            position: "top"
+                        });
+                    
                 });
-
 
                 this.numero = "";
                 this.data = null;
                 this.tipo = "";
                 this.obs = null;
                 this.numero = 0;
-
-
                 
             },
             async fileUpload(){
@@ -122,6 +146,10 @@
     input, select {
         padding: 5px 10px;
         width: 300px;
+    }
+
+    sup {
+        color: red;
     }
 
     .submit-btn {

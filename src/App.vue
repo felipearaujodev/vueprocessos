@@ -13,11 +13,11 @@
 <template>
   <Navbar />
   <RouterView />
-  <Footer />
+  
 
 </template>
 
-<style scoped>
+<style>
   
   .main-container {
     margin: 50px;
