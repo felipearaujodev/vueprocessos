@@ -18,12 +18,7 @@
 </template>
 
 <style scoped>
-  * {
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
+  
   .main-container {
     margin: 50px;
     min-height: 250px;
@@ -35,4 +30,5 @@
     margin-bottom: 30px;
     color:black;
   }
+  
 </style>
