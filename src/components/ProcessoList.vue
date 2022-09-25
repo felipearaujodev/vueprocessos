@@ -3,6 +3,12 @@
         <div>
             <a href="processo-cadastro" class="new-btn">Novo processo</a>
         </div>
+        <p v-if="errors.length">
+            <b>Por favor, corrija o(s) seguinte(s) erro(s):</b>
+            <ul>
+            <li v-for="error in errors">{{ error }}</li>
+            </ul>
+        </p>
         <div>
             <table>
                 <thead>
@@ -10,17 +16,15 @@
                         <th scope="col">Número</th>
                         <th scope="col">Data</th>
                         <th scope="col">Tipo</th>
-                        <th scope="col">Observações</th>
-                        <th scope="col">Documento</th>
+                        <th scope="col">Detalhes</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="processo in data" :key="processo">
-                        <td>{{processo.id}}</td>
+                        <td>{{processo.numero}}</td>
                         <td>{{processo.data}}</td>
                         <td>{{processo.tipo}}</td>
-                        <td>{{processo.observacoes}}</td>
-                        <td>{{processo.documento}}</td>
+                        <td><router-link :to="{name: 'processo-detalhes', params: {id: processo.id}}">Detalhes</router-link></td>
                     </tr>
                 </tbody>
             </table>
@@ -31,23 +35,38 @@
 <script>
     import { onMounted } from 'vue';
     import api from '../services/api';
+    import { createToaster } from "@meforma/vue-toaster";
+
+    const toaster = createToaster({ });
 
     export default {
         name: "ProcessosList",
         data() {
             return {
-                data: []
+                data: [],
+                errors: []
             }
         },
         methods: {
             async processos() {
+
                 await api.get('/processo')
                 .then((response) => {
                     this.data = response.data;
                     this.data.sort((a, b) => (a.data > b.data) ? -1 : (a.data === b.data) ? ((a.id != b.id) ? -1 : 1) : 1)                    
                 })
                 .catch(function (error) {
-                                        
+
+                    let mensagem = "Tempo excedido, tente novamente mais tarde";
+                    if(error.hasOwnProperty("response"))
+                    {
+                        mensagem = error.response.status + ' - ' + error.response.data;
+                    }
+
+                    toaster.show(mensagem, {
+                            type:"error",
+                            position: "top"
+                        });            
                 });
             }
         },

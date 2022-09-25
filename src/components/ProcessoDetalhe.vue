@@ -1,11 +1,11 @@
 <template>
 
         <div class="container">
-            <h1>Cadastro</h1>
+            <h1>Detalhes do processo</h1>
             <div>
                 <a href="/processos" class="new-btn">Voltar</a>
             </div>
-            <form id="processo-form" @submit="criarProcesso">
+            <form id="processo-form" @submit="salvarProcesso">
                 <div class="input-container">
                     <label for="nome">Número <sup>*</sup></label>
                     <input type="number" id="numero" name="numero" v-model="numero" placeholder="Digite o número do processo">       
@@ -30,11 +30,13 @@
                     <label for="doc">Selecione o documento: <sup>*</sup></label>
                     <input 
                         type="file" 
-                        ref="file"
-                        v-on:change="fileUpload($event)" 
+                        v-on:change="fileUpload()" 
                         id="doc" 
                         name="doc">
                 </div>
+                
+
+                <a v-bind:download="FILENAME.jpeg" v-bind:href="doc">Download</a>
 
                 <p v-if="errors.length">
                     <b>Por favor, corrija o(s) seguinte(s) erro(s):</b>
@@ -43,7 +45,7 @@
                     </ul>
                 </p>
                 <div>
-                    <input type="submit" class="submit-btn" value="Criar Processo">
+                    <input type="submit" class="submit-btn" value="Salvar">
                 </div>
             </form>
         </div>
@@ -60,7 +62,7 @@
     const toaster = createToaster({ });
 
     export default {
-        name: "ProcessoForm",
+        name: "ProcessoDetalhe",
         components: {
             PartesForm
         },
@@ -70,14 +72,13 @@
                 data: null,
                 tipo: "",
                 obs: null,
-                doc: ref(File | null),
-                doc_nome: "",
+                doc: ref(null),
                 msg: null,
                 errors: []
             }
         },
         methods: {
-            async criarProcesso(e){
+            async salvarProcesso(e){
 
                 this.errors = [];
 
@@ -111,7 +112,6 @@
                     data: this.data,
                     tipo: this.tipo,
                     obs: this.obs,
-                    documentoNome = this.doc_nome,
                     documento: this.doc,
                     partes: []
                 })
@@ -149,25 +149,38 @@
                 }
                 
             },
-            async fileUpload(e){
-                console.log(e.target.files[0]);
-                this.doc_nome = e.target.files[0].name;
-                this.blobToBase64(e.target.files[0]).then(res=>{
-                    this.doc = res;
-                }, falha => {
-                    this.doc = '';
-                });
+            async fileUpload(){
+                console.log("selected file"+ doc.value)
+                this.doc = doc.value
             },
-            blobToBase64(blob) {
-                return new Promise((resolve, _) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.readAsDataURL(blob);
+            async processo(id){
+                await api.get('/processo/'+id)
+                .then((response) => {
+                    this.data = response.data.data;
+                    this.numero = response.data.numero;
+                    this.tipo = response.data.tipo;
+                    this.obs = response.data.observacoes;
+                    this.doc = response.data.documento;
+                    
+                })
+                .catch((error) => {
+                    console.log(error);
+                    let mensagem = "Tempo excedido, tente novamente mais tarde";
+                    if(error.hasOwnProperty("response"))
+                    {
+                        mensagem = error.response.status + ' - ' + error.response.data;
+                    }
+
+                    toaster.show(mensagem, {
+                            type:"error",
+                            position: "top"
+                        });            
                 });
             }
         },
         mounted() {
-            
+            this.processo(this.$route.params.id);
+
         }
     }
 </script>

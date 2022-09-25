@@ -25,6 +25,15 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../components/ProcessoForm.vue')
     },
+    {
+      path: '/processo-detalhes/:id',
+      name: 'processo-detalhes',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../components/ProcessoDetalhe.vue'),
+      
+    },
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../components/Erro404.vue') }
   ]
 })
