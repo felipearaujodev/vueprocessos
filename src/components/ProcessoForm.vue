@@ -111,7 +111,7 @@
                     data: this.data,
                     tipo: this.tipo,
                     obs: this.obs,
-                    documentoNome = this.doc_nome,
+                    documentoNome: this.doc_nome,
                     documento: this.doc,
                     partes: []
                 })
