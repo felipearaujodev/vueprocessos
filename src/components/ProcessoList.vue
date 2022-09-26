@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div>
-            <a href="processo-cadastro" class="new-btn">Novo processo</a>
+            <a href="/processo-cadastro" class="new-btn">Novo processo</a>
         </div>
         <p v-if="errors.length">
             <b>Por favor, corrija o(s) seguinte(s) erro(s):</b>
@@ -103,9 +103,7 @@
         padding: 8px;
     }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    }
+
 
     .new-btn {
         background-color: black;
@@ -117,6 +115,7 @@
         margin: 10 auto;
         cursor: pointer;
         transition: 0.5s;
+        text-decoration: none;
     }
 
     .new-btn:hover {
