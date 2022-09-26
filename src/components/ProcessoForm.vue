@@ -8,7 +8,7 @@
             <form id="processo-form" @submit="criarProcesso">
                 <div class="input-container">
                     <label for="nome">Número <sup>*</sup></label>
-                    <input type="number" id="numero" name="numero" v-model="numero" placeholder="Digite o número do processo">       
+                    <input type="number" id="numero" name="numero" maxlength="10" v-model="numero" placeholder="Digite o número do processo">       
                 </div>
                 <div class="input-container">
                     <label for="data">Data <sup>*</sup></label>
@@ -110,7 +110,7 @@
                     numero: this.numero.toString(),
                     data: this.data,
                     tipo: this.tipo,
-                    obs: this.obs,
+                    observacoes: this.obs,
                     documentoNome: this.doc_nome,
                     documento: this.doc,
                     partes: []
@@ -150,10 +150,11 @@
                 
             },
             async fileUpload(e){
-                console.log(e.target.files[0]);
                 this.doc_nome = e.target.files[0].name;
+                
                 this.blobToBase64(e.target.files[0]).then(res=>{
                     this.doc = res;
+                    
                 }, falha => {
                     this.doc = '';
                 });

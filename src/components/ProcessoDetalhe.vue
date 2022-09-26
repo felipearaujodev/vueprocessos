@@ -3,7 +3,7 @@
         <div class="container">
             <h1>Detalhes do processo</h1>
             <div>
-                <a href="/processos" class="new-btn">Voltar</a>
+                <a href="/processos" class="back-btn">Voltar</a>
             </div>
             <form id="processo-form" @submit="salvarProcesso">
                 <div class="input-container">
@@ -23,20 +23,25 @@
                     </select>
                 </div>
                 <div class="input-container">
-                    <label for="obs">Observações</label>
-                    <input type="text" id="obs" name="obs" v-model="obs" placeholder="Observações">       
+                    <label for="obs">Observações</label> 
+                    <textarea id="obs" name="obs" v-model="obs" placeholder="Observações" rows="5" cols="50">At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.</textarea>    
                 </div>
+
                 <div class="input-container">
-                    <label for="doc">Selecione o documento: <sup>*</sup></label>
+                    <label for="doc_nome">Documento</label>
+                    <a v-bind:download="doc_nome" v-bind:href="doc" target="_blank">{{doc_nome}}</a>
+                </div>
+
+                <div class="input-container">
+                    <label for="doc">Substituir documento: <sup>*</sup></label>
                     <input 
                         type="file" 
-                        v-on:change="fileUpload()" 
+                        v-on:change="fileUpload($event)" 
                         id="doc" 
                         name="doc">
                 </div>
                 
-
-                <a v-bind:download="FILENAME.jpeg" v-bind:href="doc">Download</a>
+                
 
                 <p v-if="errors.length">
                     <b>Por favor, corrija o(s) seguinte(s) erro(s):</b>
@@ -46,6 +51,14 @@
                 </p>
                 <div>
                     <input type="submit" class="submit-btn" value="Salvar">
+                </div>
+
+                <div class="history">
+                    <router-link class="link-history" :to="{name: 'processo-historico', params:{ processoid: this.$route.params.id}}">Histórico</router-link>
+                </div>
+
+                <div>
+                    <router-view></router-view>
                 </div>
             </form>
         </div>
@@ -72,7 +85,8 @@
                 data: null,
                 tipo: "",
                 obs: null,
-                doc: ref(null),
+                doc_nome: null,
+                doc: ref(File | null),
                 msg: null,
                 errors: []
             }
@@ -107,18 +121,19 @@
 
                 
 
-                await api.post('/processo', {
+                await api.put('/processo/'+this.$route.params.id, {
                     numero: this.numero.toString(),
                     data: this.data,
                     tipo: this.tipo,
-                    obs: this.obs,
+                    observacoes: this.obs,
+                    documentoNome: this.doc_nome,
                     documento: this.doc,
                     partes: []
                 })
                 .then((response) => {
                     if(response.status >= 200 && response.status <= 299)
                     {
-                        toaster.show("Processo cadastrado com sucesso!", {
+                        toaster.show("Processo alterado com sucesso!", {
                             type:"info",
                             position: "top"
                         });
@@ -145,13 +160,30 @@
                 
                 if(!this.errors.length)
                 {
-                    window.location.href = "/processos";
+                    setTimeout(()=>{
+                        window.location.href = "/processos";
+                    }, 2000)
+                    
                 }
                 
             },
-            async fileUpload(){
-                console.log("selected file"+ doc.value)
-                this.doc = doc.value
+            async fileUpload(e){
+                console.log(e);
+                this.doc_nome = e.target.files[0].name;
+                
+                this.blobToBase64(e.target.files[0]).then(res=>{
+                    this.doc = res;
+                    
+                }, falha => {
+                    this.doc = '';
+                });
+            },
+            blobToBase64(blob) {
+                return new Promise((resolve, _) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
             },
             async processo(id){
                 await api.get('/processo/'+id)
@@ -160,6 +192,7 @@
                     this.numero = response.data.numero;
                     this.tipo = response.data.tipo;
                     this.obs = response.data.observacoes;
+                    this.doc_nome = response.data.documentoNome;
                     this.doc = response.data.documento;
                     
                 })
@@ -240,7 +273,7 @@
         color: black;
     }
 
-    .new-btn {
+    .back-btn {
         background-color: black;
         color: coral;
         font-weight: bold;
@@ -252,8 +285,29 @@
         transition: 0.5s;
     }
 
-    .new-btn:hover {
+    .back-btn:hover {
         background-color: transparent;
         color: coral;
+    }
+
+    .link-history {
+        background-color: black;
+        color: gold;
+        font-weight: bold;
+        border: 2px solid black;
+        padding: 10px;
+        font-size: 16px;
+        margin: 0 auto;
+        cursor: pointer;
+        transition: 0.5s;
+    }
+
+    .link-history:hover {
+        background-color: transparent;
+        color: black;
+    }
+
+    .history {
+        margin-top: 30px
     }
 </style>
