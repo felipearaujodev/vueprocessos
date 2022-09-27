@@ -17,7 +17,9 @@
                         <td v-else>Não</td>
                         <td>{{parteProcesso.cpf}}</td>
                         <td>{{parteProcesso.nome}}</td>
-                        <td>{{parteProcesso.sexo}}</td>
+                        <td v-if="parteProcesso.sexo == 'masculino'">Masculino</td>
+                        <td v-else-if="parteProcesso.sexo == 'feminino'">Feminino</td>
+                        <td v-else="parteProcesso.sexo == 'ignorado'">Não informado</td>
                         <td><a v-on:click="removerParte(index)" href="javascript:void(0)">Excluir</a></td>
                     </tr>
                 </tbody>

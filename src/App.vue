@@ -85,5 +85,54 @@
     background-color: transparent;
     color: black;
   }
+
+  .new-btn {
+    background-color: black;
+    color: coral;
+    font-weight: bold;
+    border: 2px solid black;
+    padding: 10px;
+    font-size: 16px;
+    margin: 10 auto;
+    cursor: pointer;
+    transition: 0.5s;
+    text-decoration: none;
+  }
+
+  .new-btn:hover {
+    background-color: transparent;
+    color: coral;
+  }
+
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  input, select {
+    padding: 5px 10px;
+    width: 300px;
+  }
+
+  label {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color:#222;
+    padding: 5px 10px;
+    border-left: 4px solid coral;
+  }
   
 </style>

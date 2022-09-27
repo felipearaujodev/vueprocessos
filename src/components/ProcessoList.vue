@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="processo in data" :key="processo">
-                        <td>{{processo.numero}}</td>
+                        <td>{{processo.id}}</td>
                         <td>{{currentDateTime(processo.data)}}</td>
                         <td v-if="processo.tipo == 'extrajudicial'">Extra Judicial</td>
                         <td v-else>Judicial</td>
@@ -95,35 +95,6 @@
         margin: 10px
     }
 
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
 
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
-
-
-
-    .new-btn {
-        background-color: black;
-        color: coral;
-        font-weight: bold;
-        border: 2px solid black;
-        padding: 10px;
-        font-size: 16px;
-        margin: 10 auto;
-        cursor: pointer;
-        transition: 0.5s;
-        text-decoration: none;
-    }
-
-    .new-btn:hover {
-        background-color: transparent;
-        color: coral;
-    }
+    
 </style>

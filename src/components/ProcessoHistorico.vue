@@ -14,7 +14,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="processoHistorico in data" :key="processo">
-                        <td>{{processoHistorico.numero}}</td>
+                        <td>{{processoHistorico.processoId}}</td>
                         <td>{{processoHistorico.data}}</td>
                         <td>{{processoHistorico.tipo}}</td>
                         <td>{{processoHistorico.observacoes}}</td>
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-    import { onMounted } from 'vue';
     import api from '../services/api';
     import { createToaster } from "@meforma/vue-toaster";
 
@@ -117,22 +116,6 @@
 
     .container > div {
         margin-top: 20px;
-    }
-
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
-
-    tr:nth-child(even) {
-        background-color: #dddddd;
     }
 
     .new-btn {
