@@ -39,10 +39,8 @@
                             <option value="ignorado">Não informar</option>
                         </select>
                         <a class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParte">Adicionar</a>
-                        <!--<router-link v-on:click="adicionarParte" :to="{name: 'processo-parte', params:{ partes: this.partes}}">Add</router-link>-->
                     </div>
                 </div>
-                <!--<router-view></router-view>-->
                 <PartesList :key="parte" :partesLista="this.partes" />
                 <div class="input-container">
                     <label for="obs">Observações</label>
@@ -137,42 +135,44 @@
                 e.preventDefault();
 
                 
-
-                await api.post('/processo', {
-                    numero: this.numero.toString(),
-                    data: this.data,
-                    tipo: this.tipo,
-                    observacoes: this.obs,
-                    documentoNome: this.doc_nome,
-                    documento: this.doc,
-                    partes: this.partes
-                })
-                .then((response) => {
-                    if(response.status >= 200 && response.status <= 299)
-                    {
-                        toaster.show("Processo cadastrado com sucesso!", {
-                            type:"info",
-                            position: "top"
-                        });
-                    }
-                    else
-                    {
+                if(!this.errors.length)
+                {
+                    await api.post('/processo', {
+                        numero: this.numero.toString(),
+                        data: this.data,
+                        tipo: this.tipo,
+                        observacoes: this.obs,
+                        documentoNome: this.doc_nome,
+                        documento: this.doc,
+                        partes: this.partes
+                    })
+                    .then((response) => {
+                        if(response.status >= 200 && response.status <= 299)
+                        {
+                            toaster.show("Processo cadastrado com sucesso!", {
+                                type:"info",
+                                position: "top"
+                            });
+                        }
+                        else
+                        {
+                            toaster.show("Erro ao cadastrar!", {
+                                type:"error",
+                                position: "top"
+                            });
+                            this.errors.push('Erro ao cadastrar.');
+                        }
+                    })
+                    .catch((error) => {
                         toaster.show("Erro ao cadastrar!", {
-                            type:"error",
-                            position: "top"
-                        });
-                        this.errors.push('Erro ao cadastrar.');
-                    }
-                })
-                .catch((error) => {
-                    toaster.show("Erro ao cadastrar!", {
-                            type:"error",
-                            position: "top"
-                        });
+                                type:"error",
+                                position: "top"
+                            });
 
-                        this.errors.push('Erro ao cadastrar.');
-                    
-                });
+                            this.errors.push('Erro ao cadastrar.');
+                        
+                    });
+                }
 
                 
                 if(!this.errors.length)

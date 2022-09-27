@@ -155,49 +155,49 @@
 
                 e.preventDefault();
 
-                
-
-                await api.put('/processo/'+this.$route.params.id, {
-                    numero: this.numero.toString(),
-                    data: this.data,
-                    tipo: this.tipo,
-                    observacoes: this.obs,
-                    documentoNome: this.doc_nome,
-                    documento: this.doc,
-                    partes: this.partesPut
-                })
-                .then((response) => {
-                    if(response.status >= 200 && response.status <= 299)
-                    {
-                        toaster.show("Processo alterado com sucesso!", {
-                            type:"info",
-                            position: "top"
-                        });
-                    }
-                    else
-                    {
+                if(!this.errors.length)
+                {
+                    await api.put('/processo/'+this.$route.params.id, {
+                        numero: this.numero.toString(),
+                        data: this.data,
+                        tipo: this.tipo,
+                        observacoes: this.obs,
+                        documentoNome: this.doc_nome,
+                        documento: this.doc
+                    })
+                    .then((response) => {
+                        if(response.status >= 200 && response.status <= 299)
+                        {
+                            toaster.show("Processo alterado com sucesso!", {
+                                type:"info",
+                                position: "top"
+                            });
+                        }
+                        else
+                        {
+                            toaster.show("Erro ao alterar!", {
+                                type:"error",
+                                position: "top"
+                            });
+                            this.errors.push('Erro ao alterar.');
+                        }
+                    })
+                    .catch((error) => {
                         toaster.show("Erro ao alterar!", {
-                            type:"error",
-                            position: "top"
-                        });
-                        this.errors.push('Erro ao alterar.');
-                    }
-                })
-                .catch((error) => {
-                    toaster.show("Erro ao alterar!", {
-                            type:"error",
-                            position: "top"
-                        });
+                                type:"error",
+                                position: "top"
+                            });
 
-                        this.errors.push('Erro ao alterar.');
-                    
-                });
+                            this.errors.push('Erro ao alterar.');
+                        
+                    });
+                }
 
                 
                 if(!this.errors.length)
                 {
                     setTimeout(()=>{
-                        //window.location.href = "/processos";
+                        window.location.href = "/processos";
                     }, 2000)
                     
                 }
