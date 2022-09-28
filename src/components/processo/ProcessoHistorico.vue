@@ -4,6 +4,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th scope="col">Id</th>
                         <th scope="col">Número</th>
                         <th scope="col">Data</th>
                         <th scope="col">Tipo</th>
@@ -13,9 +14,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="processoHistorico in data" :key="processo">
+                    <tr v-for="processoHistorico in data">
+                        <td>{{processoHistorico.id}}</td>
                         <td>{{processoHistorico.processoId}}</td>
-                        <td>{{processoHistorico.data}}</td>
+                        <td>{{formatarData(processoHistorico.dataLog)}}</td>
                         <td>{{processoHistorico.tipo}}</td>
                         <td>{{processoHistorico.observacoes}}</td>
                         <td><a v-bind:download="processoHistorico.documentoNome" v-bind:href="processoHistorico.documento" target="_blank">{{processoHistorico.documentoNome}}</a></td>
@@ -28,7 +30,8 @@
 </template>
 
 <script>
-    import api from '../services/api';
+    import api from '../../services/api';
+    import moment from 'moment';
     import { createToaster } from "@meforma/vue-toaster";
 
     const toaster = createToaster({ });
@@ -95,6 +98,9 @@
                         position: "top"
                     });                    
                 });
+            },
+            formatarData(valor) {
+                return moment(valor).format('DD/MM/YYYY HH:mm ')
             }
         },
         mounted() {

@@ -23,7 +23,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../components/ProcessoForm.vue')
+      component: () => import('../components/processo/ProcessoForm.vue')
     },
     {
       path: '/processo-detalhes/:id',
@@ -31,11 +31,11 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../components/ProcessoDetalhe.vue'),
+      component: () => import('../components/processo/ProcessoDetalhe.vue'),
       children:[{
         path:'historico',
         name: 'processo-historico', 
-        component:()=> import('../components/ProcessoHistorico.vue')
+        component:()=> import('../components/processo/ProcessoHistorico.vue')
       }]
       
     },

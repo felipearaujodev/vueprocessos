@@ -8,7 +8,7 @@
             <form id="processo-form" @submit="salvarProcesso">
                 <div class="input-container">
                     <label for="data">Número</label>
-                    <input type="number" id="numero" name="numero" v-model="numero" readonly>       
+                    <input type="number" id="numero" name="numero" v-model="numero" disabled>       
                 </div>
 
                 <div class="input-container">
@@ -24,12 +24,14 @@
                     </select>
                 </div>
 
-                <PartesForm :key="parte" 
-                    metodo="incluir"
+                <PartesForm
+                    metodo="editar"
+                    :processoId="this.numero"
                     :partesLista="this.partes"
                 />
 
-                <PartesList :key="parte" 
+                <PartesList
+                    metodo="editar"
                     :partesLista="this.partes" 
                 />
 
@@ -80,9 +82,9 @@
 
 <script>
     import { ref } from "vue";
-    import api from '../services/api';
-    import PartesList from "./PartesList.vue";
-    import PartesForm from "./PartesForm.vue";
+    import api from '../../services/api';
+    import PartesList from "../partes/PartesList.vue";
+    import PartesForm from "../partes/PartesForm.vue";
     import { createToaster } from "@meforma/vue-toaster";
 
     const toaster = createToaster({ });
@@ -130,7 +132,7 @@
                     this.errors.push('Informe ao menos uma parte.');
                 }
 
-                if (this.data /*&& this.numero*/ && this.tipo.length && this.doc.length && this.partes.length ) {
+                if (this.data && this.tipo.length && this.doc.length && this.partes.length ) {
                     this.errors.pop();
                     
                 }
@@ -140,7 +142,6 @@
                 if(!this.errors.length)
                 {
                     await api.put('/processo/'+this.$route.params.id, {
-                        numero: this.numero,
                         data: this.data,
                         tipo: this.tipo,
                         observacoes: this.obs,
@@ -158,7 +159,7 @@
                         else
                         {
                             toaster.show("Erro ao alterar!", {
-                                type:"error",
+                                type:"warning",
                                 position: "top"
                             });
                             this.errors.push('Erro ao alterar.');
@@ -166,7 +167,7 @@
                     })
                     .catch((error) => {
                         toaster.show("Erro ao alterar!", {
-                                type:"error",
+                                type:"warning",
                                 position: "top"
                             });
 

@@ -19,15 +19,18 @@
                     </select>
                 </div>
 
-                <PartesForm :key="parte" 
+                <PartesForm 
                     metodo="incluir"
                     :partesLista="this.partes"
                 />
 
-                <PartesList :key="parte" :partesLista="this.partes" />
+                <PartesList 
+                    metodo="incluir"
+                    :partesLista="this.partes" 
+                />
                 <div class="input-container">
-                    <label for="obs">Observações</label>
-                    <input type="text" id="obs" name="obs" v-model="obs" placeholder="Observações">       
+                    <label for="obs">Observações</label> 
+                    <textarea id="obs" name="obs" v-model="obs" placeholder="Observações" rows="5" cols="50">At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.</textarea>    
                 </div>
                 <div class="input-container">
                     <label for="doc">Selecione o documento:</label>
@@ -56,9 +59,9 @@
 
 <script>
     import { ref } from "vue";
-    import PartesList from "./PartesList.vue";
-    import PartesForm from "./PartesForm.vue";
-    import api from '../services/api';
+    import PartesList from "../partes/PartesList.vue";
+    import PartesForm from "../partes/PartesForm.vue";
+    import api from '../../services/api';
     import { createToaster } from "@meforma/vue-toaster";
 
     const toaster = createToaster({ });
@@ -103,7 +106,7 @@
                     this.errors.push('Informe ao menos uma parte.');
                 }
 
-                if (this.data /*&& this.numero*/ && this.tipo.length && this.doc.length && this.partes.length ) {
+                if (this.data && this.tipo.length && this.doc.length && this.partes.length ) {
                     this.errors.pop();
                     
                 }
@@ -114,7 +117,6 @@
                 if(!this.errors.length)
                 {
                     await api.post('/processo', {
-                        //numero: this.numero.toString(),
                         data: this.data,
                         tipo: this.tipo,
                         observacoes: this.obs,
@@ -133,7 +135,7 @@
                         else
                         {
                             toaster.show("Erro ao cadastrar!", {
-                                type:"error",
+                                type:"warning",
                                 position: "top"
                             });
                             this.errors.push('Erro ao cadastrar.');
@@ -141,7 +143,7 @@
                     })
                     .catch((error) => {
                         toaster.show("Erro ao cadastrar!", {
-                                type:"error",
+                                type:"warning",
                                 position: "top"
                             });
 

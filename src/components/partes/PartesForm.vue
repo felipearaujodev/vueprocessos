@@ -21,19 +21,25 @@
                 <li v-for="error in errors_partes">{{ error }}</li>
                 </ul>
             </p>
-            <a class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParte">Adicionar</a>
+            <a v-if="metodo == 'incluir'" class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParteHtml">Adicionar</a>
+            <a v-else-if="metodo == 'editar'" class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParteApi">Cadastrar</a>
         </div>
     </div>
 </template>
 
 <script>
-    import validarCPF from "../Helpers/validadorCpf.js";
+    import validarCPF from "../../Helpers/validadorCpf.js";
+    import api from '../../services/api.js'
+    import { createToaster } from "@meforma/vue-toaster";
+
+    const toaster = createToaster({ });
 
     export default {
         name: "PartesForm",
         props: {
             metodo: String,
-            partesLista: Array
+            partesLista: Array,
+            processoId: Number
         },
         data(){
             return {
@@ -45,7 +51,7 @@
             }
         },
         methods:{
-            adicionarParte() {
+            adicionarParteHtml() {
 
                 this.errors_partes = [];
                 if(!this.nome){
@@ -92,6 +98,84 @@
                     this.cpf = null;
                     this.nome = null;
                     this.sexo = "";
+                }
+            },
+            async adicionarParteApi() {
+
+                this.errors_partes = [];
+                if(!this.nome){
+                    this.errors_partes.push('O Nome é obrigatório.');
+                }
+
+                if(this.sigiloso){
+                    if(!validarCPF(this.cpf.replace(/[^a-z0-9]/gi, ""))){
+                        this.errors_partes.push('O CPF é inválido.');
+                    }
+
+                    if(this.sexo == ""){
+                        this.errors_partes.push('O Sexo é obrigatório.');
+                    }
+
+                    if (this.nome && validarCPF(this.cpf.replace(/[^a-z0-9]/gi, "")) && this.sexo.length) {
+
+                        this.errors_partes = [];
+                    }
+                }
+                else if(this.cpf)
+                {
+                    if(!validarCPF(this.cpf.replace(/[^a-z0-9]/gi, ""))){
+                        this.errors_partes.push('O CPF é inválido.');
+                    }
+                }
+
+                if(!this.errors_partes.length)
+                {
+                    await api.post('/processoPartes/', {
+                        processoId: this.processoId,
+                        sigiloso: this.sigiloso,
+                        cpf: this.cpf,
+                        nome: this.nome,
+                        sexo: this.sexo
+                    })
+                    .then((response) => {
+                        if(response.status >= 200 && response.status <= 299)
+                        {
+                            toaster.show("Parte cadastrada com sucesso!", {
+                                type:"info",
+                                position: "top"
+                            });
+
+                            this.partesLista.push({
+                                sigiloso: this.sigiloso,
+                                cpf: this.cpf,
+                                nome: this.nome,
+                                sexo: this.sexo
+                            });
+
+                            this.sigiloso = false;
+                            this.cpf = null;
+                            this.nome = null;
+                            this.sexo = "";
+                        }
+                        else
+                        {
+                            toaster.show("Erro ao cadastrar!", {
+                                type:"warning",
+                                position: "top"
+                            });
+                            this.errors.push('Erro ao alterar.');
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data);
+                        toaster.show("Erro ao alterar!", {
+                            type:"warning",
+                            position: "top"
+                        });
+
+                        this.errors.push('Erro ao alterar.');
+                        
+                    });
                 }
             }
         },

@@ -22,7 +22,7 @@
                 <tbody>
                     <tr v-for="processo in data" :key="processo">
                         <td>{{processo.id}}</td>
-                        <td>{{currentDateTime(processo.data)}}</td>
+                        <td>{{formatarData(processo.data)}}</td>
                         <td v-if="processo.tipo == 'extrajudicial'">Extra Judicial</td>
                         <td v-else>Judicial</td>
                         <td><router-link :to="{name: 'processo-detalhes', params: {id: processo.id}}">Detalhes</router-link></td>
@@ -35,7 +35,7 @@
 
 <script>
     import moment from 'moment';
-    import api from '../services/api';
+    import api from '../../services/api.js';
     import { createToaster } from "@meforma/vue-toaster";
 
     const toaster = createToaster({ });
@@ -65,12 +65,12 @@
                     }
 
                     toaster.show(mensagem, {
-                            type:"error",
+                            type:"warning",
                             position: "top"
                         });            
                 });
             },
-            currentDateTime(valor) {
+            formatarData(valor) {
                 return moment(valor).format('DD/MM/YYYY HH:mm ')
             }
         },

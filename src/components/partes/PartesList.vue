@@ -20,7 +20,8 @@
                         <td v-if="parteProcesso.sexo == 'masculino'">Masculino</td>
                         <td v-else-if="parteProcesso.sexo == 'feminino'">Feminino</td>
                         <td v-else="parteProcesso.sexo == 'ignorado'">Não informado</td>
-                        <td><a v-on:click="removerParte(index)" href="javascript:void(0)">Excluir</a></td>
+                        <td v-if="metodo == 'incluir'"><a v-on:click="removerParteHtml(index)" href="javascript:void(0)">Remover</a></td>
+                        <td v-else-if="metodo == 'editar'"><a v-on:click="removerParteApi(parteProcesso.id, index)" href="javascript:void(0)">Excluir</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -29,20 +30,47 @@
 </template>
 
 <script>
-    
+    import api from '../../services/api.js'
+    import { createToaster } from "@meforma/vue-toaster";
+
+    const toaster = createToaster({ });
 
     export default {
         name: "PartesList",
         props: {
-            partesLista: Array
+            partesLista: Array,
+            metodo: String
         },
         data(){
             return {
             }
         },
         methods:{
-            removerParte(index) {
+            removerParteHtml(index) {
                 this.partesLista.splice(index, 1);                
+            },
+            async removerParteApi(historicoId, index) {
+                await api.delete('/processoPartes/'+historicoId)
+                .then((response) => {
+                    toaster.show("Excluído com sucesso", {
+                        type:"info",
+                        position: "top"
+                    }); 
+
+                    this.partesLista.splice(index, 1); 
+                })
+                .catch((error) => {
+                    let mensagem = "Tempo excedido, tente novamente mais tarde";
+                    if(error.hasOwnProperty("response"))
+                    {
+                        mensagem = error.response.status + ' - ' + error.response.data;
+                    }
+
+                    toaster.show(mensagem, {
+                        type:"warning",
+                        position: "top"
+                    });            
+                });             
             }
         },
         mounted(){

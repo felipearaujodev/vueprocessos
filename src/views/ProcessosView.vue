@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import ProcessoForm from "../components/ProcessoForm.vue";
-import ProcessoList from "../components/ProcessoList.vue";
+import ProcessoForm from "../components/processo/ProcessoForm.vue";
+import ProcessoList from "../components/processo/ProcessoList.vue";
 
 export default {
   name: "ProcessosView",
