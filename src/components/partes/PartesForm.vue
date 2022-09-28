@@ -22,7 +22,7 @@
                 </ul>
             </p>
             <a v-if="metodo == 'incluir'" class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParteHtml">Adicionar</a>
-            <a v-else-if="metodo == 'editar'" class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParteApi">Cadastrar</a>
+            <a v-else-if="metodo == 'editar'" id="cadastrar-parte" class="submit-btn" href="javascript:void(0)" v-on:click="adicionarParteApi">Cadastrar</a>
         </div>
     </div>
 </template>
@@ -95,7 +95,7 @@
                     );
 
                     this.sigiloso = false;
-                    this.cpf = null;
+                    this.cpf = "";
                     this.nome = null;
                     this.sexo = "";
                 }
@@ -132,6 +132,7 @@
 
                 if(!this.errors_partes.length)
                 {
+                    document.getElementById("cadastrar-parte").disabled = true;
                     await api.post('/processoPartes/', {
                         processoId: this.processoId,
                         sigiloso: this.sigiloso,
@@ -159,6 +160,7 @@
                             this.cpf = "";
                             this.nome = null;
                             this.sexo = "";
+                            
                         }
                         else
                         {
@@ -179,6 +181,8 @@
                         this.errors.push('Erro ao alterar.');
                         
                     });
+
+                    document.getElementById("cadastrar-parte").disabled = false;
                 }
             }
         },

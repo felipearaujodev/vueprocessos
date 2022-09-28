@@ -49,7 +49,7 @@
                     </ul>
                 </p>
                 <div>
-                    <input type="submit" class="submit-btn" value="Criar Processo">
+                    <input id="criar-processo" type="submit" class="submit-btn" value="Criar Processo">
                 </div>
             </form>
         </div>
@@ -116,6 +116,7 @@
                 
                 if(!this.errors.length)
                 {
+                    document.getElementById("criar-processo").disabled = true;
                     await api.post('/processo', {
                         data: this.data,
                         tipo: this.tipo,
@@ -130,7 +131,7 @@
                             toaster.show("Processo cadastrado com sucesso!", {
                                 type:"info",
                                 position: "top"
-                            });
+                            });                            
                         }
                         else
                         {
@@ -139,15 +140,18 @@
                                 position: "top"
                             });
                             this.errors.push('Erro ao cadastrar.');
+                            document.getElementById("criar-processo").disabled = false;
                         }
                     })
                     .catch((error) => {
                         toaster.show("Erro ao cadastrar!", {
-                                type:"warning",
-                                position: "top"
-                            });
+                            type:"warning",
+                            position: "top"
+                        });
 
-                            this.errors.push('Erro ao cadastrar.');
+                        this.errors.push('Erro ao cadastrar.');
+
+                        document.getElementById("criar-processo").disabled = false;
                         
                     });
                 }
@@ -155,6 +159,7 @@
                 
                 if(!this.errors.length)
                 {
+                    document.getElementById("criar-processo").disabled = true;
                     setTimeout(()=>{
                         window.location.href = "/processos";
                     },2000);

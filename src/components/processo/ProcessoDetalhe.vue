@@ -70,7 +70,7 @@
                     </ul>
                 </p>
                 <div>
-                    <input type="submit" class="submit-btn" value="Salvar">
+                    <input id="salvar-processo" type="submit" class="submit-btn" value="Salvar">
                 </div>
 
                 
@@ -141,6 +141,7 @@
 
                 if(!this.errors.length)
                 {
+                    document.getElementById("salvar-processo").disabled = true;
                     await api.put('/processo/'+this.$route.params.id, {
                         data: this.data,
                         tipo: this.tipo,
@@ -163,15 +164,18 @@
                                 position: "top"
                             });
                             this.errors.push('Erro ao alterar.');
+                            document.getElementById("salvar-processo").disabled = false;
                         }
                     })
                     .catch((error) => {
                         toaster.show("Erro ao alterar!", {
-                                type:"warning",
-                                position: "top"
-                            });
+                            type:"warning",
+                            position: "top"
+                        });
 
-                            this.errors.push('Erro ao alterar.');
+                        this.errors.push('Erro ao alterar.');
+
+                        document.getElementById("criar-processo").disabled = false;
                         
                     });
                 }
@@ -179,6 +183,7 @@
                 
                 if(!this.errors.length)
                 {
+                    document.getElementById("salvar-processo").disabled = true;
                     setTimeout(()=>{
                         window.location.href = "/processos";
                     }, 2000)
