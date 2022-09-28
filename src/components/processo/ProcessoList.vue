@@ -57,11 +57,15 @@
                     this.data.sort((a, b) => (a.data > b.data) ? -1 : (a.data === b.data) ? ((a.id != b.id) ? -1 : 1) : 1)                    
                 })
                 .catch(function (error) {
-
+                    console.log(error.response.data);
                     let mensagem = "Tempo excedido, tente novamente mais tarde";
                     if(error.hasOwnProperty("response"))
                     {
-                        mensagem = error.response.status + ' - ' + error.response.data;
+                        if(error.response.data !== undefined)
+                        {
+                            mensagem = error.response.status + ' - ' + error.response.data;
+                        }
+                        
                     }
 
                     toaster.show(mensagem, {

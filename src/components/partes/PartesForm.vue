@@ -108,12 +108,14 @@
                 }
 
                 if(this.sigiloso){
-                    if(!validarCPF(this.cpf.replace(/[^a-z0-9]/gi, ""))){
-                        this.errors_partes.push('O CPF é inválido.');
-                    }
+                    
 
                     if(this.sexo == ""){
                         this.errors_partes.push('O Sexo é obrigatório.');
+                    }
+
+                    if(!validarCPF(this.cpf.replace(/[^a-z0-9]/gi, ""))){
+                        this.errors_partes.push('O CPF é inválido.');
                     }
 
                     if (this.nome && validarCPF(this.cpf.replace(/[^a-z0-9]/gi, "")) && this.sexo.length) {
@@ -146,14 +148,15 @@
                             });
 
                             this.partesLista.push({
-                                sigiloso: this.sigiloso,
-                                cpf: this.cpf,
-                                nome: this.nome,
-                                sexo: this.sexo
+                                id: response.data.id,
+                                sigiloso: response.data.sigiloso,
+                                cpf: response.data.cpf,
+                                nome: response.data.nome,
+                                sexo: response.data.sexo
                             });
 
                             this.sigiloso = false;
-                            this.cpf = null;
+                            this.cpf = "";
                             this.nome = null;
                             this.sexo = "";
                         }

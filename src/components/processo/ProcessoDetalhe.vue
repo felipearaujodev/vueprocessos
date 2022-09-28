@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="input-container">
-                    <label for="doc">Substituir documento: <sup>*</sup></label>
+                    <label for="doc">Substituir documento:</label>
                     <input 
                         type="file" 
                         v-on:change="fileUpload($event)" 
